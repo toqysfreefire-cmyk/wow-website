@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "Zero Exception — ফ্রি ফায়ার টুর্নামেন্ট",
+  "short_name": "Zero Exception",
+  "description": "Zero Exception-এ বাংলাদেশের ফ্রি ফায়ার প্লেয়ারদের জন্য Solo, Duo ও Squad টুর্নামেন্ট — ডিপোজিট, রেজিস্ট্রেশন ও প্রাইজ সব এক অ্যাপে।",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#080A10",
+  "background_color": "#080A10",
+  "categories": ["games", "sports", "entertainment"],
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "64x64", "type": "image/x-icon" }
+  ],
+  "shortcuts": [
+    { "name": "টুর্নামেন্ট", "short_name": "টুর্নামেন্ট", "url": "/tournaments" },
+    { "name": "ওয়ালেট", "short_name": "ওয়ালেট", "url": "/wallet" },
+    { "name": "ডিপোজিট", "short_name": "ডিপোজিট", "url": "/deposit" }
+  ]
+}
