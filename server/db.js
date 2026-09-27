@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const isVercel = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 const LOCAL_DATA_FILE = path.join(__dirname, 'data.json');
 const DATA_FILE = isVercel ? path.join('/tmp', 'data.json') : LOCAL_DATA_FILE;
@@ -294,6 +297,10 @@ class DB {
 
   save() {
     try {
+      const dir = path.dirname(DATA_FILE);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
     } catch (err) {
       console.error('Error saving data.json:', err.message);
