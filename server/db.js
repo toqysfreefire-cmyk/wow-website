@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_FILE = path.join(__dirname, 'data.json');
+const isVercel = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const LOCAL_DATA_FILE = path.join(__dirname, 'data.json');
+const DATA_FILE = isVercel ? path.join('/tmp', 'data.json') : LOCAL_DATA_FILE;
 
 // Default initial state
 const defaultData = {
@@ -271,23 +271,33 @@ class DB {
   }
 
   init() {
-    if (!fs.existsSync(DATA_FILE)) {
-      this.data = defaultData;
-      this.save();
-    } else {
-      try {
+    try {
+      if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
         this.data = JSON.parse(raw);
-      } catch (err) {
-        console.error('Error loading data.json, falling back to defaults:', err);
-        this.data = defaultData;
-        this.save();
+        return;
       }
+      if (isVercel && fs.existsSync(LOCAL_DATA_FILE)) {
+        const raw = fs.readFileSync(LOCAL_DATA_FILE, 'utf-8');
+        this.data = JSON.parse(raw);
+        this.save();
+        return;
+      }
+      this.data = defaultData;
+      this.save();
+    } catch (err) {
+      console.error('Error in DB init, falling back to defaultData:', err);
+      this.data = defaultData;
+      this.save();
     }
   }
 
   save() {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('Error saving data.json:', err.message);
+    }
   }
 
   getSettings() {
